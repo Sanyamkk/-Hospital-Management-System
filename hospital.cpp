@@ -6,9 +6,9 @@ Patient::Patient(int i, string n, int a, string d, string c)
     age = a;
     disease = d;
     contact = c;
-    next = nullptr;
-    left = nullptr;
-    right = nullptr;
+    next = NULL;
+    left = NULL;
+    right = NULL;
 }
 Appointment::Appointment(int id, string t, string d) 
 {
@@ -18,14 +18,14 @@ Appointment::Appointment(int id, string t, string d)
 }
 HospitalManagementSystem::HospitalManagementSystem() 
 {
-    head = nullptr;
-    root = nullptr;
+    head = NULL;
+    root = NULL;
     totalPatients = 0;
 }
 
 Patient* HospitalManagementSystem::insertBST(Patient* root, Patient* newPatient) 
 {
-    if (root == nullptr)
+    if (root == NULL)
         return newPatient;
     if (newPatient->id < root->id)
         root->left = insertBST(root->left, newPatient);
@@ -36,7 +36,7 @@ Patient* HospitalManagementSystem::insertBST(Patient* root, Patient* newPatient)
 
 Patient* HospitalManagementSystem::searchBST(Patient* root, int id) 
 {
-    if (root == nullptr || root->id == id)
+    if (root == NULL || root->id == id)
         return root;
     if (id < root->id)
         return searchBST(root->left, id);
@@ -45,7 +45,7 @@ Patient* HospitalManagementSystem::searchBST(Patient* root, int id)
 
 void HospitalManagementSystem::inorderTraversal(Patient* root) 
 {
-    if (root != nullptr) {
+    if (root != NULL) {
         inorderTraversal(root->left);
         displayPatient(root);
         inorderTraversal(root->right);
@@ -73,7 +73,7 @@ void HospitalManagementSystem::addPatient(string name, int age, string disease, 
         head = newPatient;
     } else {
         Patient* temp = head;
-        while (temp->next != nullptr)
+        while (temp->next != NULL)
             temp = temp->next;
         temp->next = newPatient;
     }
@@ -92,7 +92,7 @@ void HospitalManagementSystem::searchPatient(int id)
 }
 void HospitalManagementSystem::scheduleAppointment(int patientId, string time, string date) 
 {
-    if (searchBST(root, patientId) != nullptr) {
+    if (searchBST(root, patientId) != NULL) {
         appointments.push(Appointment(patientId, time, date));
         cout << "\nAppointment scheduled successfully!" << endl;
     } else {
@@ -137,7 +137,7 @@ void HospitalManagementSystem::saveToFile()
     ofstream file("hospital_data.txt");
     Patient* temp = head;
 
-    while (temp != nullptr) {
+    while (temp != NULL) {
         file << temp->id << ","
              << temp->name << ","
              << temp->age << ","
