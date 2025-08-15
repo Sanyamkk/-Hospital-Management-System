@@ -23,24 +23,88 @@ HospitalManagementSystem::HospitalManagementSystem()
     totalPatients = 0;
 }
 
-Patient* HospitalManagementSystem::insertBST(Patient* root, Patient* newPatient) 
-{
-    if (root == NULL)
-        return newPatient;
-    if (newPatient->id < root->id)
-        root->left = insertBST(root->left, newPatient);
-    else if (newPatient->id > root->id)
-        root->right = insertBST(root->right, newPatient);
-    return root;
+// Right rotation
+Patient* HospitalManagementSystem::rightRotate(Patient* y) {
+    Patient* x = y->left;
+    Patient* T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+
+    // Update heights
+    y->height = 1 + max(y->left ? y->left->height : 0, y->right ? y->right->height : 0);
+    x->height = 1 + max(x->left ? x->left->height : 0, x->right ? x->right->height : 0);
+
+    return x;
 }
 
-Patient* HospitalManagementSystem::searchBST(Patient* root, int id) 
+// Left rotation
+Patient* HospitalManagementSystem::leftRotate(Patient* x) {
+    Patient* y = x->right;
+    Patient* T2 = y->left;
+
+    y->left = x;
+    x->right = T2;
+
+    // Update heights
+    x->height = 1 + max(x->left ? x->left->height : 0, x->right ? x->right->height : 0);
+    y->height = 1 + max(y->left ? y->left->height : 0, y->right ? y->right->height : 0);
+
+    return y;
+}
+
+Patient* HospitalManagementSystem::insertAVL(Patient* node, Patient* newPatient) 
+{
+    if (node == NULL)
+        return newPatient;
+
+    // Normal BST insert
+    if (newPatient->id < node->id)
+        node->left = insertAVL(node->left, newPatient);
+    else if (newPatient->id > node->id)
+        node->right = insertAVL(node->right, newPatient);
+    else
+        return node; // duplicate IDs not allowed
+
+    // Update height
+    int leftHeight = node->left ? node->left->height : 0;
+    int rightHeight = node->right ? node->right->height : 0;
+    node->height = 1 + max(leftHeight, rightHeight);
+
+    // Balance factor
+    int balance = leftHeight - rightHeight;
+
+    // Left Left Case
+    if (balance > 1 && newPatient->id < node->left->id)
+        return rightRotate(node);
+
+    // Right Right Case
+    if (balance < -1 && newPatient->id > node->right->id)
+        return leftRotate(node);
+
+    // Left Right Case
+    if (balance > 1 && newPatient->id > node->left->id) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+    // Right Left Case
+    if (balance < -1 && newPatient->id < node->right->id) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    return node;
+}
+
+
+Patient* HospitalManagementSystem::searchAVL(Patient* root, int id) 
 {
     if (root == NULL || root->id == id)
         return root;
     if (id < root->id)
-        return searchBST(root->left, id);
-    return searchBST(root->right, id);
+        return searchAVL(root->left, id);
+    return searchAVL(root->right, id);
 }
 
 void HospitalManagementSystem::inorderTraversal(Patient* root) 
@@ -78,13 +142,13 @@ void HospitalManagementSystem::addPatient(string name, int age, string disease, 
         temp->next = newPatient;
     }
 
-    root = insertBST(root, newPatient);
+    root = insertAVL(root, newPatient);
     cout << "\nPatient added successfully!";
     cout << "\nAssigned Patient ID: " << id << endl;
 }
 void HospitalManagementSystem::searchPatient(int id) 
 {
-    Patient* result = searchBST(root, id);
+    Patient* result = searchAVL(root, id);
     if (result !=NULL)
         displayPatient(result);
     else
@@ -92,7 +156,7 @@ void HospitalManagementSystem::searchPatient(int id)
 }
 void HospitalManagementSystem::scheduleAppointment(int patientId, string time, string date) 
 {
-    if (searchBST(root, patientId) != NULL) {
+    if (searchAVL(root, patientId) != NULL) {
         appointments.push(Appointment(patientId, time, date));
         cout << "\nAppointment scheduled successfully!" << endl;
     } else {

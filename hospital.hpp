@@ -1,7 +1,4 @@
 
-#ifndef HOSPITAL_HPP
-#define HOSPITAL_HPP
-
 #include<bits/stdc++.h>
 using namespace std;
 struct Patient 
@@ -14,6 +11,7 @@ struct Patient
     Patient* next;  
     Patient* left;  
     Patient* right;
+    int height;
 
     Patient(int i, string n, int a, string d, string c);
 };
@@ -35,8 +33,10 @@ private:
     queue<Appointment> appointments;
     int totalPatients;
 
-    Patient* insertBST(Patient* root, Patient* newPatient);
-    Patient* searchBST(Patient* root, int id);
+    Patient* insertAVL(Patient* root, Patient* newPatient);
+    Patient* rightRotate(Patient* y);
+    Patient* leftRotate(Patient* x);
+    Patient* searchAVL(Patient* root, int id);
     void inorderTraversal(Patient* root);
     void displayPatient(Patient* patient);
 
@@ -51,5 +51,3 @@ public:
     void displayAllPatients();
     void saveToFile();
 };
-
-#endif
