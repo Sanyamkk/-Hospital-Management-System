@@ -1,6 +1,5 @@
 
 #include<bits/stdc++.h>
-using namespace std;
 struct Patient 
 {
     int id;
